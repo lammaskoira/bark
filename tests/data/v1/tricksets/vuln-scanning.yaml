@@ -1,0 +1,44 @@
+---
+version: v1
+context:
+  # Only one context works at a time
+
+  # Git repo
+  git:
+    repo: github.com/lammaskoira/bark
+    branch: main
+  # GitHub org
+  github:
+    org: lammaskoira
+
+  # github org 
+  githubOrgConfig:
+    org: lammaskoira
+rules:
+  # ID
+  - name: Should have vulnerability scanning configured
+    id: static-analysis
+    include: github.com/lammaskoira/library/vulnerability-scanning/codeql@main
+
+  - name: Should have vulnerability scanning configured
+    id: static-analysis
+    include: github.com/lammaskoira/library/vulnerability-scanning/grype@main
+
+  # Explicit "or"
+  - name: Should have vulnerability scanning configured
+    or:
+      - name: Should have CodeQL enabled
+        include: github.com/lammaskoira/library/vulnerability-scanning/codeql@main
+
+      - name: Should have Grype enabled
+        include: github.com/lammaskoira/library/vulnerability-scanning/grype@main
+
+  # Import from repo
+  - name: No secrets in repositories
+    rules_from:
+
+      # Import from a file
+      file: policies/no-secrets.yaml
+
+      # import for a repo
+      tricksetRef: github.com/lammaskoira/bark/policies/no-secrets.yaml@main

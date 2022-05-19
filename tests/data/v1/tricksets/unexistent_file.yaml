@@ -1,0 +1,20 @@
+---
+# This is a test file that demonstrates a simple
+# trickset with a single rule and an inline policy.
+# This should fail with an unexistent file.
+version: v1
+context:
+  provider: git
+  git:
+    url: https://github.com/lammaskoira/lammaskoira.git
+    branch: main
+rules:
+  - name: Should have renovate configured
+    inlinePolicy:  |
+      package bark
+
+      default allow := false
+
+      allow {
+          file.exists("./unexistent-file.json")
+      }
