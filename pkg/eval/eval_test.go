@@ -14,6 +14,10 @@ import (
 	_ "github.com/lammaskoira/bark/tests"
 )
 
+const (
+	strictBuiltins = true
+)
+
 func TestEval(t *testing.T) {
 	t.Parallel()
 
@@ -32,6 +36,13 @@ func TestEval(t *testing.T) {
 			args: args{
 				rawinput:   nil,
 				policyPath: "tests/data/rego/renovate.rego",
+			},
+		},
+		{
+			name: "The main test workflow is called 'test'",
+			args: args{
+				rawinput:   nil,
+				policyPath: "tests/data/rego/test_name.rego",
 			},
 		},
 		{
@@ -81,7 +92,7 @@ func TestEval(t *testing.T) {
 			policy, rerr := io.ReadAll(f)
 			require.NoError(t, rerr, "reading policy file")
 
-			err := eval.EvaluateOnePolicy(context.TODO(), input, string(policy))
+			err := eval.EvaluateOnePolicy(context.TODO(), input, string(policy), strictBuiltins)
 			if tt.wantErr {
 				require.Error(t, err, "evaluation should errored out")
 				require.ErrorIs(t, err, tt.errInstance)
