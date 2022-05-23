@@ -13,19 +13,40 @@ import (
 	"github.com/lammaskoira/bark/pkg/regolib"
 )
 
-func EvaluateRules(ctx context.Context, input any, rules []apiv1.RuleDefinition) error {
+func EvaluateRules(
+	ctx context.Context,
+	target string,
+	input any,
+	rules []apiv1.RuleDefinition,
+) (*apiv1.ContextualResult, error) {
+	r := &apiv1.ContextualResult{
+		Version: apiv1.Version,
+		Target:  target,
+	}
 	for _, rule := range rules {
 		if err := EvaluateOnePolicy(ctx, input, rule.InlinePolicy); err != nil {
 			if errors.Is(err, barkerrors.ErrPolicyDenial) {
-				fmt.Printf("Rule '%s' denied\n", rule.Name)
+				// TODO: Generate ID
+				r.AddResult(apiv1.Result{
+					Name:   rule.Name,
+					Status: apiv1.ResultStatusFail,
+				})
 				continue
 			}
-			return err
+			r.AddResult(apiv1.Result{
+				Name:         rule.Name,
+				Status:       apiv1.ResultStatusError,
+				ErrorMessage: err.Error(),
+			})
+			return r, err
 		}
-		fmt.Printf("Rule '%s' allowed\n", rule.Name)
+		r.AddResult(apiv1.Result{
+			Name:   rule.Name,
+			Status: apiv1.ResultStatusPass,
+		})
 	}
 
-	return nil
+	return r, nil
 }
 
 func EvaluateOnePolicy(ctx context.Context, input any, policy string, strictBuiltin ...bool) error {

@@ -66,7 +66,7 @@ func (gr *gitHubRunner) Next(ctx context.Context) (rif.TargetEval, error) {
 
 	grepo := githubRepoToRepoRef(repoInfo)
 
-	return func(ctx context.Context) error {
+	return func(ctx context.Context) (*apiv1.ContextualResult, error) {
 		// TODO(jaosorior): Add GitHub info as input
 		return gr.HandleGit(ctx, grepo, gr.ts, map[string]interface{}{})
 	}, nil

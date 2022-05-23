@@ -2,8 +2,10 @@ package runner
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 
 	apiv1 "github.com/lammaskoira/bark/api/v1"
 	"github.com/lammaskoira/bark/pkg/runner/git"
@@ -25,6 +27,10 @@ func Run(ctx context.Context, ts *apiv1.TrickSet) error {
 		return fmt.Errorf("could not setup context: %w", err)
 	}
 
+	rep := &apiv1.Report{
+		Version: apiv1.Version,
+	}
+
 	for {
 		te, nerr := runner.Next(ctx)
 		if nerr != nil {
@@ -34,9 +40,19 @@ func Run(ctx context.Context, ts *apiv1.TrickSet) error {
 			return fmt.Errorf("could not get next target: %w", nerr)
 		}
 
-		if err := te(ctx); err != nil {
+		result, err := te(ctx)
+		if err != nil {
 			return fmt.Errorf("could not run target: %w", err)
 		}
+		rep.AddResult(result)
+	}
+
+	rep.GatherOverall()
+
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	if encerr := enc.Encode(rep); encerr != nil {
+		return fmt.Errorf("could not encode report: %w", encerr)
 	}
 
 	return runner.Teardown(context.TODO())
