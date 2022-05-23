@@ -1,0 +1,23 @@
+---
+# This is a test file that demonstrates a
+# trickset that verifies if a codeQL action is set up
+version: v1
+context:
+  provider: git
+  git:
+    url: https://github.com/lammaskoira/bark.git
+    branch: main
+rules:
+  - name: Should have CodeQL analysis configured
+    inlinePolicy:  |
+      package bark
+
+      default allow := false
+
+      allow {
+          some i
+          workflowstr := file.readall("./.github/workflows/codeql-analysis.yml")
+          workflow := yaml.unmarshal(workflowstr)
+          steps := workflow.jobs.analyze.steps[i]
+          contains(steps.uses, "github/codeql-action/analyze@")
+      }

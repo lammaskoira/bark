@@ -28,12 +28,18 @@ func EvaluateRules(ctx context.Context, input any, rules []apiv1.RuleDefinition)
 	return nil
 }
 
-func EvaluateOnePolicy(ctx context.Context, input any, policy string) error {
+func EvaluateOnePolicy(ctx context.Context, input any, policy string, strictBuiltin ...bool) error {
 	args := []func(*rego.Rego){
 		rego.Query("data.bark.allow"),
 		rego.Module("bark.rego", policy),
-		rego.Dump(os.Stdout),
+		rego.Dump(os.Stderr),
 		rego.EnablePrintStatements(true),
+		rego.StrictBuiltinErrors(true),
+	}
+
+	// This is useful for debugging our custom builtins.
+	if len(strictBuiltin) > 0 && strictBuiltin[0] {
+		args = append(args, rego.StrictBuiltinErrors(true))
 	}
 
 	r := rego.New(append(args, regolib.Library()...)...)
