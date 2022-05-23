@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	noWorktree = true
+	withWorktree = false
 )
 
 type GitCommon struct {
@@ -69,7 +69,7 @@ func (gc *GitCommon) HandleGit(ctx context.Context, gd *apiv1.GitDefinition, ts 
 			Password: gc.GetAccessToken(),
 		}
 	}
-	_, err := git.PlainCloneContext(ctx, targetDir, noWorktree, opts)
+	_, err := git.PlainCloneContext(ctx, targetDir, withWorktree, opts)
 	if err != nil {
 		return fmt.Errorf("could not clone repo: %w", err)
 	}
