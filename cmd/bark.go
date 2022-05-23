@@ -5,6 +5,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"syscall"
@@ -34,6 +35,7 @@ to quickly create a Cobra application.`,
 
 	cmd.Flags().StringP("input", "i", "", "input path")
 	cmd.Flags().StringP("trickset", "t", "", "trickset path")
+	cmd.Flags().StringP("target", "x", "", "target")
 	cmd.Flags().StringP("repodir", "r", "", "repo dir path")
 	return cmd
 }
@@ -57,6 +59,11 @@ func bark(cmd *cobra.Command, args []string) error {
 	repoDirPath, rderr := notEmptyStringFlag(cmd, "repodir")
 	if rderr != nil {
 		return rderr
+	}
+
+	target, terr := notEmptyStringFlag(cmd, "target")
+	if terr != nil {
+		return terr
 	}
 
 	i, ierr := input.GetInputFromFile(inputPath)
@@ -85,13 +92,19 @@ func bark(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to change dir: %w", err)
 	}
 
-	fmt.Printf("Evaluating repo at %s\n", repoDirPath)
 	if chrerr := syscall.Chroot(repoDirPath); chrerr != nil {
 		return fmt.Errorf("failed to chroot to repo dir: %w", chrerr)
 	}
+	cr, err := eval.EvaluateRules(cmd.Context(), target, i, ts.Rules)
+	encerr := json.NewEncoder(cmd.OutOrStdout()).Encode(cr)
 
-	if err := eval.EvaluateRules(cmd.Context(), i, ts.Rules); err != nil {
+	// Return error after encoding
+	if err != nil {
 		return err
+	}
+
+	if encerr != nil {
+		return encerr
 	}
 
 	return nil

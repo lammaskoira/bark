@@ -39,7 +39,7 @@ func (gr *gitRunner) Next(ctx context.Context) (rif.TargetEval, error) {
 		return nil, rif.ErrEndOfTargets
 	}
 
-	return func(ctx context.Context) error {
+	return func(ctx context.Context) (*apiv1.ContextualResult, error) {
 		return gr.HandleGit(ctx, repoRef, gr.ts, map[string]interface{}{})
 	}, nil
 }
