@@ -5,7 +5,6 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -28,9 +27,8 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-		SilenceErrors: true, // Don't print usage
-		SilenceUsage:  true,
-		RunE:          trick,
+		SilenceUsage: true,
+		RunE:         trick,
 	}
 
 	cmd.Flags().StringP("trickset", "t", "", "trickset file to evaluate")
@@ -73,5 +71,5 @@ func trick(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("couldn't parse TrickSet file: %w", perr)
 	}
 
-	return runner.Run(context.Background(), ts)
+	return runner.Run(cmd.Context(), ts)
 }
