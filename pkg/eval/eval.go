@@ -34,7 +34,6 @@ func EvaluateOnePolicy(ctx context.Context, input any, policy string, strictBuil
 		rego.Module("bark.rego", policy),
 		rego.Dump(os.Stderr),
 		rego.EnablePrintStatements(true),
-		rego.StrictBuiltinErrors(true),
 	}
 
 	// This is useful for debugging our custom builtins.

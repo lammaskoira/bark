@@ -25,7 +25,7 @@ func TestSimpleInlineTrickSet(t *testing.T) {
 	require.NotNil(t, ts.Context.Git, "The context should have a Git context.")
 	require.Nil(t, ts.Context.GitHub, "The context should not have a GitHub context.")
 
-	require.Equal(t, "https://github.com/lammaskoira/lammaskoira.git", ts.Context.Git.URL,
+	require.Equal(t, "https://github.com/lammaskoira/bark.git", ts.Context.Git.URL,
 		"The Git context should have the right URL.")
 	require.Equal(t, "main", ts.Context.Git.Branch, "The Git context should have the right branch.")
 

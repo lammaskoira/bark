@@ -6,7 +6,7 @@ version: v1
 context:
   provider: git
   git:
-    url: https://github.com/lammaskoira/lammaskoira.git
+    url: https://github.com/lammaskoira/bark.git
     branch: main
 rules:
   - name: Should have renovate configured

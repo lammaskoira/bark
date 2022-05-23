@@ -81,6 +81,11 @@ func bark(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("invalid policy: %w", verr)
 	}
 
+	if err := os.Chdir(repoDirPath); err != nil {
+		return fmt.Errorf("failed to change dir: %w", err)
+	}
+
+	fmt.Printf("Evaluating repo at %s\n", repoDirPath)
 	if chrerr := syscall.Chroot(repoDirPath); chrerr != nil {
 		return fmt.Errorf("failed to chroot to repo dir: %w", chrerr)
 	}

@@ -20,9 +20,8 @@ func Library() []func(*rego.Rego) {
 
 var Exists = rego.Function1(
 	&rego.Function{
-		Name:    "file.exists",
-		Decl:    types.NewFunction(types.Args(types.S), types.B),
-		Memoize: true,
+		Name: "file.exists",
+		Decl: types.NewFunction(types.Args(types.S), types.B),
 	},
 	func(bctx rego.BuiltinContext, op1 *ast.Term) (*ast.Term, error) {
 		var path string
@@ -49,9 +48,8 @@ var Exists = rego.Function1(
 
 var ReadAll = rego.Function1(
 	&rego.Function{
-		Name:    "file.readall",
-		Decl:    types.NewFunction(types.Args(types.S), types.S),
-		Memoize: true,
+		Name: "file.readall",
+		Decl: types.NewFunction(types.Args(types.S), types.S),
 	},
 	func(bctx rego.BuiltinContext, op1 *ast.Term) (*ast.Term, error) {
 		var path string
