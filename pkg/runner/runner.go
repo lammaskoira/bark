@@ -7,6 +7,7 @@ import (
 
 	apiv1 "github.com/lammaskoira/bark/api/v1"
 	"github.com/lammaskoira/bark/pkg/runner/git"
+	"github.com/lammaskoira/bark/pkg/runner/github"
 	rif "github.com/lammaskoira/bark/pkg/runner/runnerinterface"
 )
 
@@ -20,12 +21,12 @@ func Run(ctx context.Context, ts *apiv1.TrickSet) error {
 		return fmt.Errorf("could not get runner: %w", err)
 	}
 
-	if err := runner.Setup(context.TODO()); err != nil {
+	if err := runner.Setup(ctx); err != nil {
 		return fmt.Errorf("could not setup context: %w", err)
 	}
 
 	for {
-		te, nerr := runner.Next(context.TODO())
+		te, nerr := runner.Next(ctx)
 		if nerr != nil {
 			if errors.Is(nerr, rif.ErrEndOfTargets) {
 				break
@@ -33,7 +34,7 @@ func Run(ctx context.Context, ts *apiv1.TrickSet) error {
 			return fmt.Errorf("could not get next target: %w", nerr)
 		}
 
-		if err := te(context.TODO()); err != nil {
+		if err := te(ctx); err != nil {
 			return fmt.Errorf("could not run target: %w", err)
 		}
 	}
@@ -42,10 +43,11 @@ func Run(ctx context.Context, ts *apiv1.TrickSet) error {
 }
 
 func GetContextualRunner(trickSet *apiv1.TrickSet) (rif.Runner, error) {
-	// nolint:exhaustive // TODO(jaosorior): implement GitHub provider
 	switch trickSet.Context.Provider {
 	case apiv1.GitContext:
 		return git.NewGitRunner(trickSet)
+	case apiv1.GitHubContext:
+		return github.NewGitHubRunner(trickSet)
 	}
 	return nil, fmt.Errorf("could not get runner for provider %s", trickSet.Context.Provider)
 }
