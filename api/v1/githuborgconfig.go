@@ -7,4 +7,5 @@ type GitHubOrgConfigDefinition struct {
 
 const (
 	OrgConfigInputKey = "orgconfig"
+	AppsInOrgInputKey = "apps_in_org"
 )
