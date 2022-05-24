@@ -90,7 +90,7 @@ func (gc *GitCommon) HandleGit(
 	defer inputfile.Close()
 	gc.TrackFile(inputfile.Name())
 
-	if eerr := json.NewEncoder(inputfile).Encode(map[string]string{}); eerr != nil {
+	if eerr := json.NewEncoder(inputfile).Encode(input); eerr != nil {
 		return nil, fmt.Errorf("failed to encode input: %w", eerr)
 	}
 

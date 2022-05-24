@@ -27,29 +27,6 @@ type ContextDefinition struct {
 	GitHub   *GitHubDefinition `json:"github,omitempty" yaml:"github,omitempty"`
 }
 
-type GitDefinition struct {
-	URL    string `json:"url" yaml:"url"`
-	Branch string `json:"branch" yaml:"branch"`
-
-	// TODO(jaosorior): Add support for credentials
-}
-
-type GitHubDefinition struct {
-	// Org is the organization that owns the repos
-	Org string `json:"org" yaml:"org"`
-
-	// Branch to check for when evaluating the policy on repos
-	Branch string `json:"branch" yaml:"branch"`
-
-	// Override the default branch for a repo
-	Overrides []GitHubDefinition `json:"overrides,omitempty" yaml:"overrides,omitempty"`
-
-	// Exclude repos from the policy
-	Exclude []string `json:"exclude,omitempty" yaml:"exclude,omitempty"`
-
-	// TODO(jaosorior): Add support for credentials
-}
-
 type GithubRepoConfig struct {
 	Org string `json:"org" yaml:"org"`
 }
