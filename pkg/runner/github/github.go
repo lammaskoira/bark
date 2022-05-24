@@ -23,13 +23,13 @@ const (
 func NewGitHubRunner(ts *apiv1.TrickSet) (rif.Runner, error) {
 	return &gitHubRunner{
 		ts:    ts,
-		repos: util.NewStack[*gh.Repository](),
+		repos: util.NewStack[string](),
 	}, nil
 }
 
 type gitHubRunner struct {
 	ts         *apiv1.TrickSet
-	repos      *util.Stack[*gh.Repository]
+	repos      *util.Stack[string]
 	client     *gh.Client
 	httpClient *http.Client
 	gitcommon.GitCommon
@@ -47,7 +47,7 @@ func (gr *gitHubRunner) Setup(ctx context.Context) error {
 	}
 
 	for _, repo := range repos {
-		gr.repos.Push(repo)
+		gr.repos.Push(*repo.Name)
 	}
 
 	return nil
@@ -58,17 +58,37 @@ func (gr *gitHubRunner) Teardown(ctx context.Context) error {
 }
 
 func (gr *gitHubRunner) Next(ctx context.Context) (rif.TargetEval, error) {
-	repoInfo := gr.repos.Pop()
-	// handles both the insertion of a nil value and the end of the stack
-	if repoInfo == nil {
+	if gr.repos.IsEmpty() {
 		return nil, rif.ErrEndOfTargets
+	}
+
+	repoName := gr.repos.Pop()
+	// handles both the insertion of a nil value and the end of the stack
+	if repoName == "" {
+		return nil, rif.ErrEndOfTargets
+	}
+
+	repoInfo, _, repoErr := gr.client.Repositories.Get(ctx,
+		gr.ts.Context.GitHub.Org, repoName)
+	if repoErr != nil {
+		return nil, fmt.Errorf("unable to get repo info: %w", repoErr)
+	}
+
+	vulnalerts, _, vulnErr := gr.client.Repositories.GetVulnerabilityAlerts(ctx,
+		gr.ts.Context.GitHub.Org, repoName)
+
+	if vulnErr != nil {
+		return nil, fmt.Errorf("unable to get repo vulnerability alerts: %w", vulnErr)
 	}
 
 	grepo := githubRepoToRepoRef(repoInfo)
 
 	return func(ctx context.Context) (*apiv1.ContextualResult, error) {
-		// TODO(jaosorior): Add GitHub info as input
-		return gr.HandleGit(ctx, grepo, gr.ts, map[string]interface{}{})
+		input := map[string]interface{}{
+			apiv1.RepositoryMetadataInputKey: repoInfo,
+			"vulnerability_alerts_enabled":   vulnalerts,
+		}
+		return gr.HandleGit(ctx, grepo, gr.ts, input)
 	}, nil
 }
 
