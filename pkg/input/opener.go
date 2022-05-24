@@ -19,6 +19,10 @@ func GetInputFromFile(path string) (any, error) {
 }
 
 func GetInputFromReader(r io.Reader) (any, error) {
+	if r == nil {
+		return nil, fmt.Errorf("input reader can't be nil")
+	}
+
 	output := &map[string]any{}
 	d := json.NewDecoder(r)
 
