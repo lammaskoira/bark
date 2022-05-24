@@ -1,0 +1,22 @@
+---
+# This is a test file that demonstrates a simple
+# trickset that demonstrate evaluating a rule
+# that verifies if an app is installed
+version: v1
+context:
+  provider: githubOrgConfig
+  githubOrgConfig:
+    org: lammaskoira
+rules:
+  - name: Should have the renovate app installed
+    inlinePolicy:  |
+      package bark
+
+      default allow := false
+
+      allow {
+          some i
+          apps := input.apps_in_org.installations[i]
+          apps.app_slug == "renovate"
+      }
+  

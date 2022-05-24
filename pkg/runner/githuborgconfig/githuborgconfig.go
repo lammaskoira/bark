@@ -22,7 +22,7 @@ type gitHubOrgConfigRunner struct {
 	ts *apiv1.TrickSet
 	// We still create a stack here... but it's meant to only
 	// hold one object
-	org *util.Stack[*gh.Organization]
+	org *util.Stack[string]
 	githubcommon.GitHubCommon
 	util.FileTracker
 }
@@ -30,7 +30,7 @@ type gitHubOrgConfigRunner struct {
 func NewGitHubOrgConfigRunner(ts *apiv1.TrickSet) (rif.Runner, error) {
 	return &gitHubOrgConfigRunner{
 		ts:  ts,
-		org: util.NewStack[*gh.Organization](),
+		org: util.NewStack[string](),
 	}, nil
 }
 
@@ -39,12 +39,7 @@ func (gr *gitHubOrgConfigRunner) Setup(ctx context.Context) error {
 	gr.SetupGitHubClient(ctx)
 
 	org := gr.ts.Context.GitHubOrgConfig.Org
-	orgInfo, _, orgErr := gr.GetGHClient().Organizations.Get(ctx, org)
-	if orgErr != nil {
-		return fmt.Errorf("unable to setup GitHub runner: %w", orgErr)
-	}
-
-	gr.org.Push(orgInfo)
+	gr.org.Push(org)
 
 	return nil
 }
@@ -59,14 +54,26 @@ func (gr *gitHubOrgConfigRunner) Next(ctx context.Context) (rif.TargetEval, erro
 	}
 
 	org := gr.org.Pop()
-	// handles both the insertion of a nil value and the end of the stack
-	if org == nil {
+	// handles both the insertion of an empty value and the end of the stack
+	if org == "" {
 		return nil, rif.ErrEndOfTargets
+	}
+
+	orgInfo, _, orgErr := gr.GetGHClient().Organizations.Get(ctx, org)
+	if orgErr != nil {
+		return nil, fmt.Errorf("unable to get org info: %w", orgErr)
+	}
+
+	appsInstalled, _, appErr := gr.GetGHClient().Organizations.ListInstallations(ctx, org,
+		&gh.ListOptions{})
+	if appErr != nil {
+		return nil, fmt.Errorf("unable to get apps installed in organization: %w", appErr)
 	}
 
 	return func(ctx context.Context) (*apiv1.ContextualResult, error) {
 		input := map[string]interface{}{
-			apiv1.OrgConfigInputKey: org,
+			apiv1.OrgConfigInputKey: orgInfo,
+			apiv1.AppsInOrgInputKey: appsInstalled,
 		}
 		targetDir, tderr := ioutil.TempDir("", "bark-github-org-config")
 		if tderr != nil {
@@ -103,7 +110,7 @@ func (gr *gitHubOrgConfigRunner) Next(ctx context.Context) (rif.TargetEval, erro
 		c := exec.Command(cmd, "bark",
 			"-i", inputfile.Name(),
 			"-t", tsfile.Name(),
-			"-x", org.GetName(),
+			"-x", org,
 			"-r", targetDir,
 		)
 

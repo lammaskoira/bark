@@ -149,6 +149,9 @@ retrieved from the GitHub API. The current implementation adds the following key
 * `orgconfig`: The organization configuration from the GitHub API.
   This comes from a [GET request to the GitHub API](https://docs.github.com/en/rest/reference/orgs#get-an-organization).
 
+* `apps_in_org`: It's a list of all the GitHub Apps in the organization.
+  This comes from a [GET request to the GitHub API](https://docs.github.com/en/rest/orgs/orgs#list-app-installations-for-an-organization).
+
 ### Policy language
 
 The policy format is [rego](https://www.openpolicyagent.org/docs/latest/policy-language/)
