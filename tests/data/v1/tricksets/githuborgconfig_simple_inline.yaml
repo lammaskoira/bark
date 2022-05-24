@@ -1,0 +1,19 @@
+---
+# This is a test file that demonstrates a simple
+# trickset with a single rule and an inline policy
+version: v1
+context:
+  provider: githubOrgConfig
+  githubOrgConfig:
+    org: lammaskoira
+rules:
+  - name: Should have multi-factor auth enabled
+    inlinePolicy:  |
+      package bark
+
+      default allow := false
+
+      allow {
+          input.orgconfig.two_factor_requirement_enabled
+      }
+  

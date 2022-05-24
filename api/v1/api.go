@@ -17,14 +17,16 @@ type TrickSet struct {
 type ValidContext string
 
 const (
-	GitContext    = ValidContext("git")
-	GitHubContext = ValidContext("github")
+	GitContext             = ValidContext("git")
+	GitHubContext          = ValidContext("github")
+	GitHubOrgConfigContext = ValidContext("githubOrgConfig")
 )
 
 type ContextDefinition struct {
-	Provider ValidContext      `json:"provider" yaml:"provider"`
-	Git      *GitDefinition    `json:"git,omitempty" yaml:"git,omitempty"`
-	GitHub   *GitHubDefinition `json:"github,omitempty" yaml:"github,omitempty"`
+	Provider        ValidContext               `json:"provider" yaml:"provider"`
+	Git             *GitDefinition             `json:"git,omitempty" yaml:"git,omitempty"`
+	GitHub          *GitHubDefinition          `json:"github,omitempty" yaml:"github,omitempty"`
+	GitHubOrgConfig *GitHubOrgConfigDefinition `json:"githubOrgConfig,omitempty" yaml:"githubOrgConfig,omitempty"`
 }
 
 type GithubRepoConfig struct {

@@ -38,6 +38,12 @@ func (s *Stack[T]) Pop() T {
 	return t
 }
 
+func (s *Stack[T]) Len() int {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+	return len(s.queue)
+}
+
 func (s *Stack[T]) IsEmpty() bool {
 	s.lock.Lock()
 	defer s.lock.Unlock()

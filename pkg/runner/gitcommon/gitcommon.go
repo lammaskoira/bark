@@ -23,8 +23,8 @@ const (
 )
 
 type GitCommon struct {
-	filesToClean *util.Stack[string]
-	accessToken  string
+	accessToken string
+	util.FileTracker
 }
 
 func (gc *GitCommon) SetAccessToken(tok string) {
@@ -36,20 +36,11 @@ func (gc *GitCommon) GetAccessToken() string {
 }
 
 func (gc *GitCommon) SetupCommon(ctx context.Context) {
-	gc.filesToClean = util.NewStack[string]()
-}
-
-func (gc *GitCommon) TrackFile(file string) {
-	gc.filesToClean.Push(file)
+	gc.SetupFileTracker()
 }
 
 func (gc *GitCommon) TearDownCommon(ctx context.Context) error {
-	for !gc.filesToClean.IsEmpty() {
-		if err := os.RemoveAll(gc.filesToClean.Pop()); err != nil {
-			return err
-		}
-	}
-	return nil
+	return gc.TearDownFileTracker(ctx)
 }
 
 func (gc *GitCommon) HandleGit(

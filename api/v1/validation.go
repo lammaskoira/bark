@@ -1,6 +1,8 @@
 package v1
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func (ts *TrickSet) Validate() error {
 	if ts.GetVersion() != Version {
@@ -26,6 +28,10 @@ func (ts *TrickSet) ValidateContext() error {
 		}
 	case GitHubContext:
 		if ts.Context.GitHub != nil {
+			return nil
+		}
+	case GitHubOrgConfigContext:
+		if ts.Context.GitHubOrgConfig != nil {
 			return nil
 		}
 	default:
