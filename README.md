@@ -73,11 +73,16 @@ There are two rules in this sample:
 
 ### Contexts
 
-Currently, there are two context types defined:
+Currently, the following contexts are defined:
 
 * `git`
 
 * `github`
+
+* `githubOrgConfig`
+
+
+#### git
 
 `git` is a context that is a single Git repository. It allows
 for specifying the Git URL and branch to verify. A sample looks as
@@ -94,6 +99,8 @@ context:
 One must always define the provider to be used, and specify the provider
 configuration in the context.
 
+#### github
+
 `github` is a context allows for evaluating policies on GitHub repositories.
 It allows for specifying the GitHub organization, which will verify all
 repositories in that organization. A sample looks as follows:
@@ -108,6 +115,39 @@ context:
 While running the `bark` program, you can specify a GitHub token to
 use for authentication. This is possible via the `GITHUB_TOKEN` environment
 variable.
+
+It's also possible to evaluate a policy against the repository metadata
+retrived from the GitHub API. The current implementation adds the following keys
+to the rego input:
+
+* `repometa`: The repository metadata from the GitHub API.
+  This comes from a [GET request to the GitHub API](https://docs.github.com/en/rest/repos/repos#get-a-repository).
+
+* `vulnerability_alerts_enabled`: It's a boolean that indicates if the repository
+  has the `vulnerability-alerts` feature enabled.
+
+#### githubOrgConfig
+
+`githubOrgConfig` is a context that allows for evaluating policies
+on GitHub organizations. It allows for specifying the GitHub organization
+to evaluate. A sample looks as follows:
+
+```yaml
+context:
+  provider: githubOrgConfig
+  githubOrgConfig:
+    org: lammaskoira
+```
+
+While running the `bark` program, you can specify a GitHub token to
+use for authentication. This is possible via the `GITHUB_TOKEN` environment
+variable.
+
+Policy evaluation relies entirely on the Organization information
+retrieved from the GitHub API. The current implementation adds the following keys:
+
+* `orgconfig`: The organization configuration from the GitHub API.
+  This comes from a [GET request to the GitHub API](https://docs.github.com/en/rest/reference/orgs#get-an-organization).
 
 ### Policy language
 

@@ -10,6 +10,7 @@ import (
 	apiv1 "github.com/lammaskoira/bark/api/v1"
 	"github.com/lammaskoira/bark/pkg/runner/git"
 	"github.com/lammaskoira/bark/pkg/runner/github"
+	"github.com/lammaskoira/bark/pkg/runner/githuborgconfig"
 	rif "github.com/lammaskoira/bark/pkg/runner/runnerinterface"
 )
 
@@ -64,6 +65,8 @@ func GetContextualRunner(trickSet *apiv1.TrickSet) (rif.Runner, error) {
 		return git.NewGitRunner(trickSet)
 	case apiv1.GitHubContext:
 		return github.NewGitHubRunner(trickSet)
+	case apiv1.GitHubOrgConfigContext:
+		return githuborgconfig.NewGitHubOrgConfigRunner(trickSet)
 	}
 	return nil, fmt.Errorf("could not get runner for provider %s", trickSet.Context.Provider)
 }
