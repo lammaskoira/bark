@@ -14,7 +14,7 @@ import (
 func Library() []func(*rego.Rego) {
 	return []func(*rego.Rego){
 		Exists,
-		ReadAll,
+		Read,
 	}
 }
 
@@ -46,9 +46,9 @@ var Exists = rego.Function1(
 	},
 )
 
-var ReadAll = rego.Function1(
+var Read = rego.Function1(
 	&rego.Function{
-		Name: "file.readall",
+		Name: "file.read",
 		Decl: types.NewFunction(types.Args(types.S), types.S),
 	},
 	func(bctx rego.BuiltinContext, op1 *ast.Term) (*ast.Term, error) {

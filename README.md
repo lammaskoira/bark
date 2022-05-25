@@ -55,7 +55,7 @@ rules:
 
       allow {
           some i
-          workflowstr := file.readall("./.github/workflows/codeql-analysis.yml")
+          workflowstr := file.read("./.github/workflows/codeql-analysis.yml")
           workflow := yaml.unmarshal(workflowstr)
           steps := workflow.jobs.analyze.steps[i]
           contains(steps.uses, "github/codeql-action/analyze@")
@@ -189,7 +189,7 @@ contents of the repository, we need to define a couple of
 extensions to the rego language. This is done by adding the
 following builtin functions:
 
-* `file.readall(path)`: reads the file at `path` and returns its contents.
+* `file.read(path)`: reads the file at `path` and returns its contents.
 
 * `file.exists(path)`: checks if the file at `path` exists.
 
