@@ -16,7 +16,7 @@ rules:
 
       allow {
           some i
-          workflowstr := file.readall("./.github/workflows/codeql-analysis.yml")
+          workflowstr := file.read("./.github/workflows/codeql-analysis.yml")
           workflow := yaml.unmarshal(workflowstr)
           steps := workflow.jobs.analyze.steps[i]
           contains(steps.uses, "github/codeql-action/analyze@")
