@@ -7,7 +7,7 @@ require (
 	github.com/google/go-github/v44 v44.1.0
 	github.com/open-policy-agent/opa v0.41.0
 	github.com/spf13/cobra v1.4.0
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.2
 	golang.org/x/oauth2 v0.0.0-20220524215830-622c5d57e401
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
