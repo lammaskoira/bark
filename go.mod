@@ -5,9 +5,9 @@ go 1.18
 require (
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/google/go-github/v44 v44.1.0
-	github.com/open-policy-agent/opa v0.41.0
+	github.com/open-policy-agent/opa v0.43.1
 	github.com/spf13/cobra v1.5.0
-	github.com/stretchr/testify v1.7.2
+	github.com/stretchr/testify v1.8.0
 	golang.org/x/oauth2 v0.0.0-20220524215830-622c5d57e401
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -37,14 +37,14 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/vektah/gqlparser/v2 v2.4.4 // indirect
+	github.com/vektah/gqlparser/v2 v2.4.6 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/yashtewari/glob-intersection v0.1.0 // indirect
-	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
-	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
