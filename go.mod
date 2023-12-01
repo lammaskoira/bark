@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/google/go-github/v44 v44.1.0
+	github.com/google/go-github/v57 v57.0.0
 	github.com/open-policy-agent/opa v0.41.0
 	github.com/spf13/cobra v1.5.0
 	github.com/stretchr/testify v1.7.2
